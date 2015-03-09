@@ -8,21 +8,20 @@ public:
 	ED(std::string, std::string);
 	~ED();
 
-	// for debugging
-	friend std::ostream& operator <<(std::ostream&, const ED&);
-
-private:
-
 	int penalty(char, char);
 	int min(int, int, int);
 	int OptDistance();
 	std::string Alignment();
 
+	// for debugging
+	friend std::ostream& operator <<(std::ostream&, const ED&);
+
+private:
+
 	std::string _s;
 	std::string _t;
-
-	int _slen;
-	int _tlen;
-
+	
+//	vector<int*> _matrix;
 	int **_matrix;
+
 };

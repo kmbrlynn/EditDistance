@@ -1,5 +1,6 @@
 #include "ED.hpp"
 #include <string>
+#include <cstring>
 #include <vector>
 #include <iostream>
 
@@ -11,25 +12,26 @@ const int INSERT = 2;
 // ================================================================= con/destructors
 ED::ED(std::string s, std::string t) : _s(s), _t(t)
 {
-	_slen = _s.size();
-	_tlen = _t.size();
+	_s.append("-");
+	_t.append("-");
 
-	_matrix = new int*[_slen];
-	for(int i = 0; i < _slen; i++)
+	_matrix = new int*[_s.length()];
+
+	for(unsigned int i = 0; i < _s.length(); i++)
 	{
-		_matrix[i] = new int[_tlen];
+		_matrix[i] = new int[_t.length()];
 	}
 
-	for(int i = 0; i < _slen; i++)
+	for(unsigned int i = 0; i < _s.length(); i++)
 	{
-		for(int j = 0; j < _tlen; j++)
+		for(unsigned int j = 0; j < _t.length(); j++)
 			_matrix[i][j] = 0;
 	}
 }
 
 ED::~ED()
 {
-	for(int i = 0; i < _slen; i++)
+	for(unsigned int i = 0; i < _s.length(); i++)
 	{
 		delete [] _matrix[i];
 	}
@@ -39,24 +41,33 @@ ED::~ED()
 // ======================================================================= accessors
 int ED::penalty(char a, char b)
 {
-	int penalty = 0;
-
-	return penalty;
+	if(a == b) return 0;
+	else return 1;
 }
 
 int ED::min(int a, int b, int c)
 {
-	int min = 0;
-
-	return min;
+	if(b < a)
+		return (b < c) ? b : c;
+	
+	return (a < c) ? a : c;
 }
 
 int ED::OptDistance()
 {
 	int opt_distance = 0;
 
-	return opt_distance;
+
+	for(unsigned int i = _s.length(); i > 0; i--)
+	{
+		for(unsigned int j = _t.length(); j > 0; j--)
+		{
+			_matrix[i-1][j-1] = 1;
 	
+		}
+	}
+
+	return opt_distance;
 }
 
 std::string ED::Alignment()
@@ -69,9 +80,9 @@ std::string ED::Alignment()
 // ==================================================================== print matrix
 std::ostream& operator <<(std::ostream& os, const ED& ed)
 {
-	for(int i = 0; i < ed._slen; i++)
+	for(unsigned int i = 0; i < ed._s.length()-1; i++)
 	{
-		for(int j = 0; j < ed._tlen; j++)
+		for(unsigned int j = 0; j < ed._t.length(); j++)
 		{
 			std::cout << ed._matrix[i][j] << "  ";		
 		}
