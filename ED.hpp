@@ -1,10 +1,15 @@
 #include <string>
+#include <vector>
 
 class ED
 {
 public:
 
 	ED(std::string, std::string);
+	~ED();
+
+	// for debugging
+	friend std::ostream& operator <<(std::ostream&, const ED&);
 
 private:
 
@@ -16,4 +21,8 @@ private:
 	std::string _s;
 	std::string _t;
 
+	int _slen;
+	int _tlen;
+
+	int **_matrix;
 };
