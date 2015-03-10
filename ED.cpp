@@ -68,10 +68,10 @@ int ED::OptDistance()
 			n = j-1;
 			subt = _t.substr(j);
 			if(i == _s.length())
-				_matrix[m][n] = (_t.length() - subt.length()) * INSERT;
+				_matrix[m][n] = (_t.length() - (_t.length() - subt.length())) * INSERT;
 			
 			if(j == _t.length()) 
-				_matrix[m][n] = (_s.length() - subs.length()) * INSERT;
+				_matrix[m][n] = (_s.length() - (_s.length() - subs.length())) * INSERT;
 			
 		}
 	}
