@@ -8,6 +8,7 @@ public:
 	ED(std::string, std::string);
 	~ED();
 
+	void BaseCases();
 	int penalty(char, char);
 	int min(int, int, int);
 	int OptDistance();

@@ -39,6 +39,31 @@ ED::~ED()
 }
 
 // ======================================================================= accessors
+void ED::BaseCases()
+{
+	int m, n;
+	std::string subs, subt;
+
+	for(unsigned int i = _s.length(); i > 0; i--)
+	{
+		m = i-1;
+		subs = _s.substr(i);
+		for(unsigned int j = _t.length(); j > 0; j--)
+		{
+			n = j-1;
+			subt = _t.substr(j);
+		
+			// bottom row
+			if(i == _s.length())
+				_matrix[m][n] = (_t.length() - (_t.length() - subt.length())) * INSERT;
+			
+			// right column
+			if(j == _t.length()) 
+				_matrix[m][n] = (_s.length() - (_s.length() - subs.length())) * INSERT;
+		}
+	}
+}
+
 int ED::penalty(char a, char b)
 {
 	if(a == b) return 0;
@@ -56,27 +81,30 @@ int ED::min(int a, int b, int c)
 int ED::OptDistance()
 {
 	int m, n, opt_distance;
-	std::string subs, subt;
+//	std::string subs, subt;
 
-	for(unsigned int i = _s.length(); i > 0; i--)
+	// first go through and fill out bottom row / right column
+	BaseCases();
+
+	for(unsigned int i = _s.length()-1; i > 0; i--)
 	{
 		m = i-1;
-		subs = _s.substr(i);
-		for(unsigned int j = _t.length(); j > 0; j--)
+//		subs = _s.substr(i);
+		for(unsigned int j = _t.length()-1; j > 0; j--)
 		{
 			int bottom, right, diag;
 			n = j-1;
-			subt = _t.substr(j);
-		
+/*			subt = _t.substr(j);
+
 			// base cases: bottom row, right column
 			if(i == _s.length())
 				_matrix[m][n] = (_t.length() - (_t.length() - subt.length())) * INSERT;
 			
 			if(j == _t.length()) 
 				_matrix[m][n] = (_s.length() - (_s.length() - subs.length())) * INSERT;
-			
+*/	
 			// potential values of current square, if you arrived from the...
-			bottom = _matrix[n+1][n] + INSERT;
+			bottom = _matrix[m+1][n] + INSERT;
 			right = _matrix[m][n+1] + INSERT; 
 			diag = _matrix[m+1][n+1] + (_s.at(i) == _t.at(j)) ?  MATCH : REPLACE; 
 
