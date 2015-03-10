@@ -55,19 +55,26 @@ int ED::min(int a, int b, int c)
 
 int ED::OptDistance()
 {
+	int m, n;
+	std::string subs, subt;
 	int opt_distance = 0;
 
 	for(unsigned int i = _s.length(); i > 0; i--)
 	{
+		m = i-1;
+		subs = _s.substr(i);
 		for(unsigned int j = _t.length(); j > 0; j--)
 		{
-			if(_s.at(i-1) == (_t.at(j-1)))
-			{
-				_matrix[i-1][j-1] = 1;	
-			}	
+			n = j-1;
+			subt = _t.substr(j);
+			if(i == _s.length())
+				_matrix[m][n] = (_t.length() - subt.length()) * INSERT;
+			
+			if(j == _t.length()) 
+				_matrix[m][n] = (_s.length() - subs.length()) * INSERT;
+			
 		}
 	}
-
 	return opt_distance;
 }
 
