@@ -55,9 +55,8 @@ int ED::min(int a, int b, int c)
 
 int ED::OptDistance()
 {
-	int m, n;
+	int m, n, opt_distance;
 	std::string subs, subt;
-	int opt_distance = 0;
 
 	for(unsigned int i = _s.length(); i > 0; i--)
 	{
@@ -65,14 +64,23 @@ int ED::OptDistance()
 		subs = _s.substr(i);
 		for(unsigned int j = _t.length(); j > 0; j--)
 		{
+			int bottom, right, diag;
 			n = j-1;
 			subt = _t.substr(j);
+		
+			// base cases: bottom row, right column
 			if(i == _s.length())
 				_matrix[m][n] = (_t.length() - (_t.length() - subt.length())) * INSERT;
 			
 			if(j == _t.length()) 
 				_matrix[m][n] = (_s.length() - (_s.length() - subs.length())) * INSERT;
 			
+			// potential values of current square, if you arrived from the...
+			bottom = _matrix[n+1][n] + INSERT;
+			right = _matrix[m][n+1] + INSERT; 
+			diag = _matrix[m+1][n+1] + (_s.at(i) == _t.at(j)) ?  MATCH : REPLACE; 
+
+			opt_distance = min(bottom, right, diag);
 		}
 	}
 	return opt_distance;
