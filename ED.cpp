@@ -57,13 +57,14 @@ int ED::OptDistance()
 {
 	int opt_distance = 0;
 
-
 	for(unsigned int i = _s.length(); i > 0; i--)
 	{
 		for(unsigned int j = _t.length(); j > 0; j--)
 		{
-			_matrix[i-1][j-1] = 1;
-	
+			if(_s.at(i-1) == (_t.at(j-1)))
+			{
+				_matrix[i-1][j-1] = 1;	
+			}	
 		}
 	}
 
@@ -80,14 +81,23 @@ std::string ED::Alignment()
 // ==================================================================== print matrix
 std::ostream& operator <<(std::ostream& os, const ED& ed)
 {
-	for(unsigned int i = 0; i < ed._s.length()-1; i++)
+	std::cout << "    ";
+	for(unsigned int i = 0; i < ed._t.length(); i++)
+		std::cout << ed._t.at(i) << "  ";
+	std::cout << std::endl << std::endl;
+
+	for(unsigned int i = 0; i < ed._s.length(); i++)
 	{
+		std::cout << ed._s.at(i) << "   ";
+
 		for(unsigned int j = 0; j < ed._t.length(); j++)
 		{
 			std::cout << ed._matrix[i][j] << "  ";		
 		}
 		std::cout << std::endl;
 	}
+
+	std::cout << std::endl;
 
 	return os;
 }
