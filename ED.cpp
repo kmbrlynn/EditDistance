@@ -81,24 +81,24 @@ std::string ED::Alignment()
 // ==================================================================== print matrix
 std::ostream& operator <<(std::ostream& os, const ED& ed)
 {
+	// print _t string across the top (to label the columns)
 	std::cout << "    ";
 	for(unsigned int i = 0; i < ed._t.length(); i++)
 		std::cout << ed._t.at(i) << "  ";
-	std::cout << std::endl << std::endl;
+	std::cout << std::endl;
 
 	for(unsigned int i = 0; i < ed._s.length(); i++)
 	{
-		std::cout << ed._s.at(i) << "   ";
-
+		// print _s string along the side (to label rows)
+		std::cout << std::endl << ed._s.at(i) << "   ";
 		for(unsigned int j = 0; j < ed._t.length(); j++)
 		{
+			// print contents of squares
 			std::cout << ed._matrix[i][j] << "  ";		
 		}
-		std::cout << std::endl;
 	}
-
 	std::cout << std::endl;
-
+	
 	return os;
 }
 
