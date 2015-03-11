@@ -3,6 +3,7 @@
 #include <cstring>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 const int MATCH = 0;
 const int REPLACE = 1;
@@ -84,8 +85,7 @@ int ED::OptDistance()
 		//	std::cout << bottom << ", ";
 			int right = _matrix[i-1][j] + INSERT; 
 		//	std::cout << right << ", ";
-			int diag = _matrix[i][j] + (penalty(_s.at(i-1), _t.at(j-1)));
-		//	int diag = _matrix[i][j] + ((_s.at(i-1) == _t.at(j-1)) ?  MATCH : REPLACE); 
+			int diag = _matrix[i][j] + (penalty(_s.at(i-1), _t.at(j-1))); 
 		//	std::cout << diag << " = ";
 
 			opt_distance = min(bottom, right, diag);
@@ -100,44 +100,66 @@ int ED::OptDistance()
 std::string ED::Alignment()
 {
 	std::string alignment;
-	int current, diag, right, bottom, smallest;
+	int i = 0, j = 0;
+	int current, diag right, bottom;
+	vector<int> neighbors;
 
-	for(unsigned int i = 0; i < _s.length(); i++)
+	while(i <= _s.length()-1 || j <= _t.length()-1)
 	{
-		for(unsigned int j = 0; j < _t.length(); j++)
+		current = _matrix[i][j];
+		diag = _matrix[i+1][j+1];
+		right = _matrix[i][j+1];
+		bottom = _matrix[i+1][j];
+		neighbors.push_back(diag);
+		neighbors.push_back(right);
+		neighbors.push_back(bottom);
+		
+		// sort the 3 neighbors, determine smallest
+		std::sort(std::begin(neighbors), std::end(neighbors));
+		int smallest = neighbors[0];
+
+		// from smallest to current
+		int cost;
+		int difference = current - smallest;
+
+		if(&smallest == &diag)
 		{
-			int difference;
-			int cost;
+			cost = (penalty(_s.at(i), _t.at(j)));
 
-			if(i == _s.length()-1 || j == _t.length()-1)
+			// if it's legal for path to have gone this way	
+			if (difference == cost)
 			{
-				// last char before the base case
-				alignment.push_back(_matrix[i][j]);
-				return alignment; 
+				alignment.push_back(_s.at(i+1));
+				alignment.push_back(' ');
+				alignment.push_back(_t.at(j+1));
+				alignment.push_back(' ');
+				if (cost == MATCH)
+					alignment.push_back(itoa(MATCH));
+				if (cost == REPLACE)
+					alignment.push_back(itoa(REPLACE));
+				alignment.push_back(" \n");
+				i++;
+				j++;				
 			}
+			// otherwise, path must have gone thru next-smallest
+			else smallest = neighbors[1];
+		}
 
-			current = _matrix[i][j];
-			diag = _matrix[i+1][j+1];
-			right = _matrix[i][j+1];
-			bottom = _matrix[i+1][j];
-	
-			// pick the smallest of the three
-			smallest = min(diag, right, bottom);
-
-			// determine cost of going from neighbor to current
-			if(&smallest == &diag)
-			//	cost = ((_s.at(i) == _t.at(j)) ? MATCH : REPLACE);
-				cost = (penalty(_s.at(i-1), _t.at(j-1)));
-			if(&smallest == &right || &smallest == &bottom)
-				cost = INSERT;
-
-			// make sure it's legal
-			difference = (current - smallest);
-//			if(cost != difference)
-				// deal with illegal
-//			else
-				
-	
+		if(&smallest == &right || &smallest == &bottom)
+		{
+			// if it's legal for path to have gone this way	
+			if (difference == cost)
+			{
+				alignment.push_back(_s.at(i));
+				alignment.push_back(" ");
+				alignment.push_back(_t.at(j));
+				alignment.push_back(" ");
+				alignment.push_back(itoa(INSERT));
+				alignment.push_back(" \n");
+				current = _matrix[i+1][j+1];				
+			}
+			// otherwise, path must have gone thru next-smallest
+			else smallest = neighbors[1];
 		}
 
 	}
