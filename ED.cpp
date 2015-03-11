@@ -35,25 +35,22 @@ ED::~ED()
 // ======================================================================= mutators
 void ED::BaseCases()
 {
-	int m, n;
 	std::string subs, subt;
 
 	for(unsigned int i = _s.length(); i > 0; i--)
 	{
-		m = i-1;
 		subs = _s.substr(i);
 		for(unsigned int j = _t.length(); j > 0; j--)
 		{
-			n = j-1;
 			subt = _t.substr(j);
 		
 			// bottom row
 			if(i == _s.length())
-				_matrix[m][n] = (_t.length() - (_t.length() - subt.length())) * INSERT;
+				_matrix[i-1][j-1] = (_t.length() - (_t.length() - subt.length())) * INSERT;
 			
 			// right column
 			if(j == _t.length()) 
-				_matrix[m][n] = (_s.length() - (_s.length() - subs.length())) * INSERT;
+				_matrix[i-1][j-1] = (_s.length() - (_s.length() - subs.length())) * INSERT;
 		}
 	}
 }
@@ -73,30 +70,27 @@ int ED::min(int a, int b, int c)
 }
 
 int ED::OptDistance()
-{
-	int m, n, opt_distance;
+{ 
+	int opt_distance;
 
 	// first go through and fill out bottom row / right column
 	BaseCases();
 
 	for(unsigned int i = _s.length()-1; i > 0; i--)
 	{
-		m = i-1;
 		for(unsigned int j = _t.length()-1; j > 0; j--)
 		{
-			n = j-1;	
-
 			// potential values of current square, if you arrived from the...
-			int bottom = _matrix[m+1][n] + INSERT;
+			int bottom = _matrix[i][j-1] + INSERT;
 		//	std::cout << bottom << ", ";
-			int right = _matrix[m][n+1] + INSERT; 
+			int right = _matrix[i-1][j] + INSERT; 
 		//	std::cout << right << ", ";
-			int diag = _matrix[m+1][n+1] + ((_s.at(m) == _t.at(n)) ?  MATCH : REPLACE); 
+			int diag = _matrix[i][j] + ((_s.at(i-1) == _t.at(j-1)) ?  MATCH : REPLACE); 
 		//	std::cout << diag << " = ";
 
 			opt_distance = min(bottom, right, diag);
 		//	std::cout << "opt " << opt_distance << " | ";
-			_matrix[m][n] = opt_distance;
+			_matrix[i-1][j-1] = opt_distance;
 		}
 	//	std::cout << std::endl;
 	}
