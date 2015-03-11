@@ -57,8 +57,7 @@ void ED::BaseCases()
 
 int ED::penalty(char a, char b)
 {
-	if(a == b) return 0;
-	else return 1;
+	return ((a == b) ?  MATCH : REPLACE); 
 }
 
 int ED::min(int& a, int& b, int& c)
@@ -85,7 +84,8 @@ int ED::OptDistance()
 		//	std::cout << bottom << ", ";
 			int right = _matrix[i-1][j] + INSERT; 
 		//	std::cout << right << ", ";
-			int diag = _matrix[i][j] + ((_s.at(i-1) == _t.at(j-1)) ?  MATCH : REPLACE); 
+			int diag = _matrix[i][j] + (penalty(_s.at(i-1), _t.at(j-1)));
+		//	int diag = _matrix[i][j] + ((_s.at(i-1) == _t.at(j-1)) ?  MATCH : REPLACE); 
 		//	std::cout << diag << " = ";
 
 			opt_distance = min(bottom, right, diag);
@@ -126,16 +126,16 @@ std::string ED::Alignment()
 
 			// determine cost of going from neighbor to current
 			if(&smallest == &diag)
-				cost = ((_s.at(i) == _t.at(j)) ? MATCH : REPLACE);
-
+			//	cost = ((_s.at(i) == _t.at(j)) ? MATCH : REPLACE);
+				cost = (penalty(_s.at(i-1), _t.at(j-1)));
 			if(&smallest == &right || &smallest == &bottom)
 				cost = INSERT;
 
 			// make sure it's legal
 			difference = (current - smallest);
-			if(cost != difference)
+//			if(cost != difference)
 				// deal with illegal
-			else
+//			else
 				
 	
 		}
