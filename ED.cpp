@@ -81,7 +81,6 @@ int ED::min(int a, int b, int c)
 int ED::OptDistance()
 {
 	int m, n, opt_distance;
-//	std::string subs, subt;
 
 	// first go through and fill out bottom row / right column
 	BaseCases();
@@ -89,26 +88,17 @@ int ED::OptDistance()
 	for(unsigned int i = _s.length()-1; i > 0; i--)
 	{
 		m = i-1;
-//		subs = _s.substr(i);
 		for(unsigned int j = _t.length()-1; j > 0; j--)
 		{
-			int bottom, right, diag;
-			n = j-1;
-/*			subt = _t.substr(j);
+			n = j-1;	
 
-			// base cases: bottom row, right column
-			if(i == _s.length())
-				_matrix[m][n] = (_t.length() - (_t.length() - subt.length())) * INSERT;
-			
-			if(j == _t.length()) 
-				_matrix[m][n] = (_s.length() - (_s.length() - subs.length())) * INSERT;
-*/	
 			// potential values of current square, if you arrived from the...
-			bottom = _matrix[m+1][n] + INSERT;
-			right = _matrix[m][n+1] + INSERT; 
-			diag = _matrix[m+1][n+1] + (_s.at(i) == _t.at(j)) ?  MATCH : REPLACE; 
+			int bottom = _matrix[m+1][n] + INSERT;
+			int right = _matrix[m][n+1] + INSERT; 
+			int diag = _matrix[m+1][n+1] + (_s.at(i) == _t.at(j)) ?  MATCH : REPLACE; 
 
 			opt_distance = min(bottom, right, diag);
+			_matrix[m][n] = opt_distance;
 		}
 	}
 	return opt_distance;
@@ -127,7 +117,7 @@ std::ostream& operator <<(std::ostream& os, const ED& ed)
 	// print _t string across the top (to label the columns)
 	std::cout << "    ";
 	for(unsigned int i = 0; i < ed._t.length(); i++)
-		std::cout << ed._t.at(i) << "  ";
+		std::cout << "    " << ed._t.at(i);
 	std::cout << std::endl;
 
 	for(unsigned int i = 0; i < ed._s.length(); i++)
@@ -137,7 +127,10 @@ std::ostream& operator <<(std::ostream& os, const ED& ed)
 		for(unsigned int j = 0; j < ed._t.length(); j++)
 		{
 			// print contents of squares
-			std::cout << ed._matrix[i][j] << "  ";		
+			if(ed._matrix[i][j] > 9)
+				std::cout << "   " << ed._matrix[i][j];
+			else
+				std::cout << "    " << ed._matrix[i][j];		
 		}
 	}
 	std::cout << std::endl;
