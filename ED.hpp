@@ -10,7 +10,7 @@ public:
 
 	void BaseCases();
 	int penalty(char, char);
-	int min(int, int, int);
+	int min(int&, int&, int&);
 	int OptDistance();
 	std::string Alignment();
 

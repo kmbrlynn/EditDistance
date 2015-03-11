@@ -61,7 +61,7 @@ int ED::penalty(char a, char b)
 	else return 1;
 }
 
-int ED::min(int a, int b, int c)
+int ED::min(int& a, int& b, int& c)
 {
 	if(b < a)
 		return (b < c) ? b : c;
@@ -100,6 +100,43 @@ int ED::OptDistance()
 std::string ED::Alignment()
 {
 	std::string alignment;
+	int current, diag, right, bottom, smallest;
+	int* neighbor_ptr;
+
+	for(unsigned int i = 0; i < _s.length(); i++)
+	{
+		for(unsigned int j = 0; j < _t.length(); j++)
+		{
+			int difference;
+			int cost;
+
+			if(i == _s.length()-1 || j == _t.length()-1)
+				return alignment; // fix this base case
+
+			current = _matrix[i][j];
+			diag = _matrix[i+1][j+1];
+			right = _matrix[i][j+1];
+			bottom = _matrix[i+1][j];
+	
+			// pick the smallest of the three, store its address
+			smallest = min(diag, right, bottom);
+			neighbor_ptr = &smallest;
+
+			// make sure it's legal
+			difference = (current - *neighbor_ptr);
+	
+			if(neighbor_ptr == *diag) // if the diag was the smallest
+			{
+				cost = ((_s.at(i) == _t.at(j)) ? MATCH : REPLACE);
+			}
+
+			if(neighbor_ptr == *right || *neighbor_ptr == *bottom)
+			{
+				if(neighbor_ptr == *bottom)
+			}
+		}
+
+	}
 
 	return alignment;
 }
