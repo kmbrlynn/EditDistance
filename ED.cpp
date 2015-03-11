@@ -21,12 +21,6 @@ ED::ED(std::string s, std::string t) : _s(s), _t(t)
 	{
 		_matrix[i] = new int[_t.length()];
 	}
-
-	for(unsigned int i = 0; i < _s.length(); i++)
-	{
-		for(unsigned int j = 0; j < _t.length(); j++)
-			_matrix[i][j] = 0;
-	}
 }
 
 ED::~ED()
@@ -94,18 +88,18 @@ int ED::OptDistance()
 
 			// potential values of current square, if you arrived from the...
 			int bottom = _matrix[m+1][n] + INSERT;
-			std::cout << bottom << ", ";
+		//	std::cout << bottom << ", ";
 			int right = _matrix[m][n+1] + INSERT; 
-			std::cout << right << ", ";
+		//	std::cout << right << ", ";
 			int diag = _matrix[m+1][n+1] + ((_s.at(m) == _t.at(n)) ?  MATCH : REPLACE); 
-			std::cout << diag << " = ";
+		//	std::cout << diag << " = ";
 
 			opt_distance = min(bottom, right, diag);
-			std::cout << "opt " << opt_distance << " | ";
+		//	std::cout << "opt " << opt_distance << " | ";
 			_matrix[m][n] = opt_distance;
 		}
-		std::cout << std::endl;
-}
+	//	std::cout << std::endl;
+	}
 	return opt_distance;
 }
 
