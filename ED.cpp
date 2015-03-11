@@ -38,7 +38,7 @@ ED::~ED()
 	delete _matrix;
 }
 
-// ======================================================================= accessors
+// ======================================================================= mutators
 void ED::BaseCases()
 {
 	int m, n;
@@ -94,13 +94,18 @@ int ED::OptDistance()
 
 			// potential values of current square, if you arrived from the...
 			int bottom = _matrix[m+1][n] + INSERT;
+			std::cout << bottom << ", ";
 			int right = _matrix[m][n+1] + INSERT; 
-			int diag = _matrix[m+1][n+1] + (_s.at(i) == _t.at(j)) ?  MATCH : REPLACE; 
+			std::cout << right << ", ";
+			int diag = _matrix[m+1][n+1] + ((_s.at(m) == _t.at(n)) ?  MATCH : REPLACE); 
+			std::cout << diag << " = ";
 
 			opt_distance = min(bottom, right, diag);
+			std::cout << "opt " << opt_distance << " | ";
 			_matrix[m][n] = opt_distance;
 		}
-	}
+		std::cout << std::endl;
+}
 	return opt_distance;
 }
 
