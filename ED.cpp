@@ -108,9 +108,9 @@ std::string ED::Alignment()
 	int* diagptr = &_matrix[i+1][j+1];	
 	int* bottomptr = &_matrix[i+1][j];
 
-	while(i <= _s.length()-1 || j <= _t.length()-1)
+	while(i < _s.length()-1 || j < _t.length()-1)
 	{
-		std::cout << "i = " << _s.length()-1 << " | j = " << _t.length()-1 << "\n";
+//		std::cout << "i = " << i << " | j = " << j << "\n";
 		int* neighbors[] = {rightptr, diagptr, bottomptr};
 		int* chosenptr;
 
@@ -123,11 +123,11 @@ std::string ED::Alignment()
 				// and it's legal for the path to have come from there
 				if ((*currentptr - *rightptr) == INSERT)
 				{
-					alignment.push_back(_s.at(i));
+					alignment.append("-");			// _s would be a gap (x)
 					alignment.append(" ");
-					alignment.append("-"); // insert gap in t string
+					alignment.push_back(_t.at(j+1)); // _t would be a letter (y)
 					alignment.append(" ");
-					alignment.push_back(INSERT);
+					alignment.append("2");
 					alignment.append(" \n");
 					chosenptr = rightptr;
 					j++;				
@@ -142,14 +142,14 @@ std::string ED::Alignment()
 				// and it's legal for the path to have come from there
 				if ((*currentptr - *diagptr) == penalty(_s.at(i), _t.at(j)))
 				{
-					alignment.push_back(_s.at(i+1));
+					alignment.push_back(_s.at(i+1)); // _s would be a letter (x)
 					alignment.append(" ");
-					alignment.push_back(_t.at(j+1));
+					alignment.push_back(_t.at(j+1)); // _t would be a letter (y)
 					alignment.append(" ");
-					if ((*currentptr - *diagptr) == MATCH)
-						alignment.push_back(MATCH);
+					if ((*currentptr - *diagptr) == MATCH) 
+						alignment.append("0");
 					if ((*currentptr - *diagptr) == REPLACE)
-						alignment.push_back(REPLACE);
+						alignment.append("1");
 					alignment.append(" \n");
 					chosenptr = diagptr;
 					i++;
@@ -165,11 +165,11 @@ std::string ED::Alignment()
 				// and it's legal for the path to have come from there
 				if ((*currentptr - *bottomptr) == INSERT)
 				{
-					alignment.append("-"); // insert gap in s string
+					alignment.push_back(_s.at(i+1));	// _s would be a letter (x)
 					alignment.append(" ");
-					alignment.push_back(_t.at(j));
+					alignment.append("-"); 			 	// _t would be a gap (y)
 					alignment.append(" ");
-					alignment.push_back(INSERT);
+					alignment.append("2");
 					alignment.append(" \n");
 					chosenptr = bottomptr;
 					i++;				
@@ -183,7 +183,7 @@ std::string ED::Alignment()
 		rightptr = &_matrix[i][j+1];
 		diagptr = &_matrix[i+1][j+1];	
 		bottomptr = &_matrix[i+1][j];
-	}
+	} 
 
 	return alignment;
 }
