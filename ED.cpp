@@ -103,24 +103,25 @@ std::string ED::Alignment()
 	std::string alignment;
 	unsigned int i = 0, j = 0;
 
-	int	current = _matrix[i][j];
-	int	right = _matrix[i][j+1];
-	int	diag = _matrix[i+1][j+1];	
-	int	bottom = _matrix[i+1][j];
+	int* currentptr = &_matrix[i][j];
+	int* rightptr = &_matrix[i][j+1];
+	int* diagptr = &_matrix[i+1][j+1];	
+	int* bottomptr = &_matrix[i+1][j];
 
 	while(i <= _s.length()-1 || j <= _t.length()-1)
 	{
-		int neighbors[] = {right, diag, bottom};
-		int chosen;
+		std::cout << "i = " << _s.length()-1 << " | j = " << _t.length()-1 << "\n";
+		int* neighbors[] = {rightptr, diagptr, bottomptr};
+		int* chosenptr;
 
 		// try each neighboring square
 		for(int k = 0; k < 3; k++)
 		{
 			// ================================================ if neighbor is Right
-			if(neighbors[k] == right)
+			if(neighbors[k] == rightptr)
 			{
 				// and it's legal for the path to have come from there
-				if ((current - right) == INSERT)
+				if ((*currentptr - *rightptr) == INSERT)
 				{
 					alignment.push_back(_s.at(i));
 					alignment.append(" ");
@@ -128,41 +129,41 @@ std::string ED::Alignment()
 					alignment.append(" ");
 					alignment.push_back(INSERT);
 					alignment.append(" \n");
-					chosen = right;
+					chosenptr = rightptr;
 					j++;				
 				}
 			}
 			// choose the right square, move on
-			if (chosen == right) break;
+			if (chosenptr == rightptr) break;
 
 			// ================================================= if neighbor is Diag
-			if(neighbors[k] == diag)
+			if(neighbors[k] == diagptr)
 			{
 				// and it's legal for the path to have come from there
-				if ((current - diag) == penalty(_s.at(i), _t.at(j)))
+				if ((*currentptr - *diagptr) == penalty(_s.at(i), _t.at(j)))
 				{
 					alignment.push_back(_s.at(i+1));
 					alignment.append(" ");
 					alignment.push_back(_t.at(j+1));
 					alignment.append(" ");
-					if ((current - diag) == MATCH)
+					if ((*currentptr - *diagptr) == MATCH)
 						alignment.push_back(MATCH);
-					if ((current - diag) == REPLACE)
+					if ((*currentptr - *diagptr) == REPLACE)
 						alignment.push_back(REPLACE);
 					alignment.append(" \n");
-					chosen = diag;
+					chosenptr = diagptr;
 					i++;
 					j++;				
 				}
 			}
 			// choose the diagonal square, move on
-			if (chosen == diag) break;
+			if (chosenptr == diagptr) break;
 	
 			// ================================================ if neighbor is Bottom
-			if(neighbors[k] == bottom)
+			if(neighbors[k] == bottomptr)
 			{
 				// and it's legal for the path to have come from there
-				if ((current - bottom) == INSERT)
+				if ((*currentptr - *bottomptr) == INSERT)
 				{
 					alignment.append("-"); // insert gap in s string
 					alignment.append(" ");
@@ -170,18 +171,18 @@ std::string ED::Alignment()
 					alignment.append(" ");
 					alignment.push_back(INSERT);
 					alignment.append(" \n");
-					chosen = bottom;
+					chosenptr = bottomptr;
 					i++;				
 				}
 			}
 			// choose the bottom square, move on
-			if (chosen == bottom) break;
+			if (chosenptr == bottomptr) break;
 		}
 
-		current = chosen;
-		right = _matrix[i][j+1];
-		diag = _matrix[i+1][j+1];	
-		bottom = _matrix[i+1][j];
+		currentptr = chosenptr;
+		rightptr = &_matrix[i][j+1];
+		diagptr = &_matrix[i+1][j+1];	
+		bottomptr = &_matrix[i+1][j];
 	}
 
 	return alignment;
