@@ -102,88 +102,86 @@ std::string ED::Alignment()
 {
 	std::string alignment;
 	unsigned int i = 0, j = 0;
-	int current, diag, right, bottom;
-	std::vector<int> neighbors;
+
+	int	current = _matrix[i][j];
+	int	right = _matrix[i][j+1];
+	int	diag = _matrix[i+1][j+1];	
+	int	bottom = _matrix[i+1][j];
 
 	while(i <= _s.length()-1 || j <= _t.length()-1)
 	{
-		current = _matrix[i][j];
-		diag = _matrix[i+1][j+1];
+		int neighbors[] = {right, diag, bottom};
+		int chosen;
+
+		// try each neighboring square
+		for(int k = 0; k < 3; k++)
+		{
+			// ================================================ if neighbor is Right
+			if(neighbors[k] == right)
+			{
+				// and it's legal for the path to have come from there
+				if ((current - right) == INSERT)
+				{
+					alignment.push_back(_s.at(i));
+					alignment.append(" ");
+					alignment.append("-"); // insert gap in t string
+					alignment.append(" ");
+					alignment.push_back(INSERT);
+					alignment.append(" \n");
+					chosen = right;
+					j++;				
+				}
+			}
+			// choose the right square, move on
+			if (chosen == right) break;
+
+			// ================================================= if neighbor is Diag
+			if(neighbors[k] == diag)
+			{
+				// and it's legal for the path to have come from there
+				if ((current - diag) == penalty(_s.at(i), _t.at(j)))
+				{
+					alignment.push_back(_s.at(i+1));
+					alignment.append(" ");
+					alignment.push_back(_t.at(j+1));
+					alignment.append(" ");
+					if ((current - diag) == MATCH)
+						alignment.push_back(MATCH);
+					if ((current - diag) == REPLACE)
+						alignment.push_back(REPLACE);
+					alignment.append(" \n");
+					chosen = diag;
+					i++;
+					j++;				
+				}
+			}
+			// choose the diagonal square, move on
+			if (chosen == diag) break;
+	
+			// ================================================ if neighbor is Bottom
+			if(neighbors[k] == bottom)
+			{
+				// and it's legal for the path to have come from there
+				if ((current - bottom) == INSERT)
+				{
+					alignment.append("-"); // insert gap in s string
+					alignment.append(" ");
+					alignment.push_back(_t.at(j));
+					alignment.append(" ");
+					alignment.push_back(INSERT);
+					alignment.append(" \n");
+					chosen = bottom;
+					i++;				
+				}
+			}
+			// choose the bottom square, move on
+			if (chosen == bottom) break;
+		}
+
+		current = chosen;
 		right = _matrix[i][j+1];
+		diag = _matrix[i+1][j+1];	
 		bottom = _matrix[i+1][j];
-		neighbors.push_back(diag);
-		neighbors.push_back(right);
-		neighbors.push_back(bottom);
-		
-		// sort the 3 neighbors, determine smallest
-		std::sort(neighbors.begin(), neighbors.end());
-		int smallest = neighbors[0];
-
-		// between smallest and current
-		int cost;
-		int difference = current - smallest;
-
-		if(&smallest == &diag)
-		{
-			cost = (penalty(_s.at(i), _t.at(j)));
-
-			// if it's legal for path to have gone this way	
-			if (difference == cost)
-			{
-				alignment.push_back(_s.at(i+1));
-				alignment.append(" ");
-				alignment.push_back(_t.at(j+1));
-				alignment.append(" ");
-				if (cost == MATCH)
-					alignment.push_back(MATCH);
-				if (cost == REPLACE)
-					alignment.push_back(REPLACE);
-				alignment.append(" \n");
-				i++;
-				j++;				
-			}
-			// otherwise, path must have gone thru next-smallest
-			else smallest = neighbors[1];
-		}
-
-		if(&smallest == &right)
-		{
-			cost = INSERT;
-			
-			// if it's legal for path to have gone this way	
-			if (difference == cost)
-			{
-				alignment.push_back(_s.at(i));
-				alignment.append(" ");
-				alignment.append("-"); // instead of j+1
-				alignment.append(" ");
-				alignment.push_back(INSERT);
-				alignment.append(" \n");
-				j++;				
-			}
-			// otherwise, path must have gone thru next-smallest
-			else smallest = neighbors[1];
-		}
-
-		if(&smallest == &bottom)
-		{
-			cost = INSERT;
-			
-			// if it's legal for path to have gone this way	
-			if (difference == cost)
-			{
-				alignment.append("-"); // instead of i+1
-				alignment.append(" ");
-				alignment.push_back(_t.at(j));
-				alignment.append(" ");
-				alignment.push_back(INSERT);
-				alignment.append(" \n");
-				i++;				
-			}
-			// otherwise, path must have gone thru next-smallest
-			else smallest = neighbors[1];
-			
-		}
 	}
 
 	return alignment;
