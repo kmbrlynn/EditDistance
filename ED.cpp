@@ -1,15 +1,11 @@
 #include "ED.hpp"
 #include <string>
-#include <cstring>
 #include <vector>
 #include <iostream>
-#include <algorithm>
-#include <stdlib.h>
 
 const int MATCH = 0;
 const int REPLACE = 1;
 const int INSERT = 2;
-
 
 // ================================================================= con/destructors
 ED::ED(std::string s, std::string t) : _s(s), _t(t)
@@ -48,11 +44,13 @@ void ED::BaseCases()
 		
 			// bottom row
 			if(i == _s.length())
-				_matrix[i-1][j-1] = (_t.length() - (_t.length() - subt.length())) * INSERT;
+				_matrix[i-1][j-1] = 
+					(_t.length() - (_t.length() - subt.length())) * INSERT;
 			
 			// right column
 			if(j == _t.length()) 
-				_matrix[i-1][j-1] = (_s.length() - (_s.length() - subs.length())) * INSERT;
+				_matrix[i-1][j-1] = 
+					(_s.length() - (_s.length() - subs.length())) * INSERT;
 		}
 	}
 }
@@ -65,8 +63,7 @@ int ED::penalty(char a, char b)
 int ED::min(int& a, int& b, int& c)
 {
 	if(b < a)
-		return (b < c) ? b : c;
-	
+		return (b < c) ? b : c;	
 	return (a < c) ? a : c;
 }
 
@@ -83,17 +80,12 @@ int ED::OptDistance()
 		{
 			// potential values of current square, if you arrived from the...
 			int bottom = _matrix[i][j-1] + INSERT;
-		//	std::cout << bottom << ", ";
 			int right = _matrix[i-1][j] + INSERT; 
-		//	std::cout << right << ", ";
 			int diag = _matrix[i][j] + (penalty(_s.at(i-1), _t.at(j-1))); 
-		//	std::cout << diag << " = ";
 
 			opt_distance = min(bottom, right, diag);
-		//	std::cout << "opt " << opt_distance << " | ";
 			_matrix[i-1][j-1] = opt_distance;
 		}
-	//	std::cout << std::endl;
 	}
 	return opt_distance;
 }
@@ -110,7 +102,6 @@ std::string ED::Alignment()
 
 	while(i < _s.length()-1 || j < _t.length()-1)
 	{
-//		std::cout << "i = " << i << " | j = " << j << "\n";
 		int* neighbors[] = {rightptr, diagptr, bottomptr};
 		int* chosenptr;
 
@@ -120,12 +111,12 @@ std::string ED::Alignment()
 			// ================================================ if neighbor is Right
 			if(neighbors[k] == rightptr)
 			{
-				// and it's legal for the path to have come from there
+				// and it's legal for the path to have come from the right
 				if ((*currentptr - *rightptr) == INSERT)
 				{
 					alignment.append("-");			// _s would be a gap (x)
 					alignment.append(" ");
-					alignment.push_back(_t.at(j)); // _t would be a letter (y)
+					alignment.push_back(_t.at(j));	// _t would be a letter (y)
 					alignment.append(" ");
 					alignment.append("2");
 					alignment.append(" \n");
@@ -139,7 +130,7 @@ std::string ED::Alignment()
 			// ================================================= if neighbor is Diag
 			if(neighbors[k] == diagptr)
 			{
-				// and it's legal for the path to have come from there
+				// and it's legal for the path to have come from the diagonal
 				if ((*currentptr - *diagptr) == penalty(_s.at(i), _t.at(j)))
 				{
 					alignment.push_back(_s.at(i)); // _s would be a letter (x)
@@ -159,15 +150,15 @@ std::string ED::Alignment()
 			// choose the diagonal square, move on
 			if (chosenptr == diagptr) break;
 	
-			// ================================================ if neighbor is Bottom
+			// =============================================== if neighbor is Bottom
 			if(neighbors[k] == bottomptr)
 			{
-				// and it's legal for the path to have come from there
+				// and it's legal for the path to have come from the bottom
 				if ((*currentptr - *bottomptr) == INSERT)
 				{
 					alignment.push_back(_s.at(i));	// _s would be a letter (x)
 					alignment.append(" ");
-					alignment.append("-"); 			 	// _t would be a gap (y)
+					alignment.append("-"); 			// _t would be a gap (y)
 					alignment.append(" ");
 					alignment.append("2");
 					alignment.append(" \n");
@@ -179,6 +170,7 @@ std::string ED::Alignment()
 			if (chosenptr == bottomptr) break;
 		}
 
+		// update based on the square (right, diag, bottom) you chose 
 		currentptr = chosenptr;
 		rightptr = &_matrix[i][j+1];
 		diagptr = &_matrix[i+1][j+1];	
@@ -191,7 +183,7 @@ std::string ED::Alignment()
 // ==================================================================== print matrix
 std::ostream& operator <<(std::ostream& os, const ED& ed)
 {
-	// print _t string across the top (to label the columns)
+	// print _t string across the top (to label the columns) - this is y
 	std::cout << "    ";
 	for(unsigned int i = 0; i < ed._t.length(); i++)
 		std::cout << "    " << ed._t.at(i);
@@ -199,7 +191,7 @@ std::ostream& operator <<(std::ostream& os, const ED& ed)
 
 	for(unsigned int i = 0; i < ed._s.length(); i++)
 	{
-		// print _s string along the side (to label rows)
+		// print _s string along the side (to label rows) - this is x
 		std::cout << std::endl << ed._s.at(i) << "   ";
 		for(unsigned int j = 0; j < ed._t.length(); j++)
 		{
@@ -210,14 +202,7 @@ std::ostream& operator <<(std::ostream& os, const ED& ed)
 				std::cout << "    " << ed._matrix[i][j];		
 		}
 	}
-	std::cout << std::endl;
-	
+	std::cout << std::endl;	
 	return os;
 }
-
-
-
-
-
-
 
