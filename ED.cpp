@@ -125,7 +125,7 @@ std::string ED::Alignment()
 				{
 					alignment.append("-");			// _s would be a gap (x)
 					alignment.append(" ");
-					alignment.push_back(_t.at(j+1)); // _t would be a letter (y)
+					alignment.push_back(_t.at(j)); // _t would be a letter (y)
 					alignment.append(" ");
 					alignment.append("2");
 					alignment.append(" \n");
@@ -142,9 +142,9 @@ std::string ED::Alignment()
 				// and it's legal for the path to have come from there
 				if ((*currentptr - *diagptr) == penalty(_s.at(i), _t.at(j)))
 				{
-					alignment.push_back(_s.at(i+1)); // _s would be a letter (x)
+					alignment.push_back(_s.at(i)); // _s would be a letter (x)
 					alignment.append(" ");
-					alignment.push_back(_t.at(j+1)); // _t would be a letter (y)
+					alignment.push_back(_t.at(j)); // _t would be a letter (y)
 					alignment.append(" ");
 					if ((*currentptr - *diagptr) == MATCH) 
 						alignment.append("0");
@@ -165,7 +165,7 @@ std::string ED::Alignment()
 				// and it's legal for the path to have come from there
 				if ((*currentptr - *bottomptr) == INSERT)
 				{
-					alignment.push_back(_s.at(i+1));	// _s would be a letter (x)
+					alignment.push_back(_s.at(i));	// _s would be a letter (x)
 					alignment.append(" ");
 					alignment.append("-"); 			 	// _t would be a gap (y)
 					alignment.append(" ");
