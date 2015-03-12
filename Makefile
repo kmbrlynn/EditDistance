@@ -4,7 +4,7 @@ CFLAGS = -Wall -Werror -ansi -pedantic -g
 all: EditDistance
 
 EditDistance: EditDistance.o ED.o
-	$(CC) $(CFLAGS) -o EditDistance EditDistance.o ED.o
+	$(CC) $(CFLAGS) -o EditDistance EditDistance.o ED.o -lsfml-system
 
 EditDistance.o: EditDistance.cpp ED.cpp
 	$(CC) $(CFLAGS) -c EditDistance.cpp
