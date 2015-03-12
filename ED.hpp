@@ -21,7 +21,7 @@ private:
 
 	std::string _s;
 	std::string _t;
-	
+
 //	vector<int*> _matrix;
 	int **_matrix;
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <stdlib.h>
 
 const int MATCH = 0;
 const int REPLACE = 1;
@@ -100,9 +101,9 @@ int ED::OptDistance()
 std::string ED::Alignment()
 {
 	std::string alignment;
-	int i = 0, j = 0;
-	int current, diag right, bottom;
-	vector<int> neighbors;
+	unsigned int i = 0, j = 0;
+	int current, diag, right, bottom;
+	std::vector<int> neighbors;
 
 	while(i <= _s.length()-1 || j <= _t.length()-1)
 	{
@@ -115,10 +116,10 @@ std::string ED::Alignment()
 		neighbors.push_back(bottom);
 		
 		// sort the 3 neighbors, determine smallest
-		std::sort(std::begin(neighbors), std::end(neighbors));
+		std::sort(neighbors.begin(), neighbors.end());
 		int smallest = neighbors[0];
 
-		// from smallest to current
+		// between smallest and current
 		int cost;
 		int difference = current - smallest;
 
@@ -130,14 +131,14 @@ std::string ED::Alignment()
 			if (difference == cost)
 			{
 				alignment.push_back(_s.at(i+1));
-				alignment.push_back(' ');
+				alignment.append(" ");
 				alignment.push_back(_t.at(j+1));
-				alignment.push_back(' ');
+				alignment.append(" ");
 				if (cost == MATCH)
-					alignment.push_back(itoa(MATCH));
+					alignment.push_back(MATCH);
 				if (cost == REPLACE)
-					alignment.push_back(itoa(REPLACE));
-				alignment.push_back(" \n");
+					alignment.push_back(REPLACE);
+				alignment.append(" \n");
 				i++;
 				j++;				
 			}
@@ -145,23 +146,44 @@ std::string ED::Alignment()
 			else smallest = neighbors[1];
 		}
 
-		if(&smallest == &right || &smallest == &bottom)
+		if(&smallest == &right)
 		{
+			cost = INSERT;
+			
 			// if it's legal for path to have gone this way	
 			if (difference == cost)
 			{
 				alignment.push_back(_s.at(i));
-				alignment.push_back(" ");
-				alignment.push_back(_t.at(j));
-				alignment.push_back(" ");
-				alignment.push_back(itoa(INSERT));
-				alignment.push_back(" \n");
-				current = _matrix[i+1][j+1];				
+				alignment.append(" ");
+				alignment.append("-"); // instead of j+1
+				alignment.append(" ");
+				alignment.push_back(INSERT);
+				alignment.append(" \n");
+				j++;				
 			}
 			// otherwise, path must have gone thru next-smallest
 			else smallest = neighbors[1];
 		}
 
+		if(&smallest == &bottom)
+		{
+			cost = INSERT;
+			
+			// if it's legal for path to have gone this way	
+			if (difference == cost)
+			{
+				alignment.append("-"); // instead of i+1
+				alignment.append(" ");
+				alignment.push_back(_t.at(j));
+				alignment.append(" ");
+				alignment.push_back(INSERT);
+				alignment.append(" \n");
+				i++;				
+			}
+			// otherwise, path must have gone thru next-smallest
+			else smallest = neighbors[1];
+			
+		}
 	}
 
 	return alignment;
