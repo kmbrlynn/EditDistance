@@ -101,8 +101,7 @@ std::string ED::Alignment()
 	int* diagptr = &_matrix[i+1][j+1];	
 	int* bottomptr = &_matrix[i+1][j];
 
-	while(i < _m-2 || j < _n-2) // m-1, n-1 is base case
-								// m-2, n-2 is the first case 
+	while(i < _m-1 || j < _n-1)
 	{
 		int* neighbors[] = {rightptr, diagptr, bottomptr};
 		int* chosenptr;
@@ -111,7 +110,7 @@ std::string ED::Alignment()
 		for(int k = 0; k < 3; k++)
 		{
 			// ================================================ if neighbor is Right
-			if(neighbors[k] == rightptr)
+			if(neighbors[k] == rightptr && j < _n-1)
 			{
 				// and it's legal for the path to have come from the right
 				if ((*currentptr - *rightptr) == INSERT)
@@ -153,7 +152,7 @@ std::string ED::Alignment()
 			if (chosenptr == diagptr) break;
 	
 			// =============================================== if neighbor is Bottom
-			if(neighbors[k] == bottomptr)
+			if(neighbors[k] == bottomptr && i < _m-1)
 			{
 				// and it's legal for the path to have come from the bottom
 				if ((*currentptr - *bottomptr) == INSERT)
