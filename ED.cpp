@@ -13,17 +13,20 @@ ED::ED(std::string s, std::string t) : _s(s), _t(t)
 	_s.append("-");
 	_t.append("-");
 
-	_matrix = new int*[_s.length()];
+	_m = _s.length();
+	_n = _t.length();
 
-	for(unsigned int i = 0; i < _s.length(); i++)
+	_matrix = new int*[_m];
+
+	for(unsigned int i = 0; i < _m; i++)
 	{
-		_matrix[i] = new int[_t.length()];
+		_matrix[i] = new int[_n];
 	}
 }
 
 ED::~ED()
 {
-	for(unsigned int i = 0; i < _s.length(); i++)
+	for(unsigned int i = 0; i < _m; i++)
 	{
 		delete [] _matrix[i];
 	}
@@ -35,22 +38,20 @@ void ED::BaseCases()
 {
 	std::string subs, subt;
 
-	for(unsigned int i = _s.length(); i > 0; i--)
+	for(unsigned int i = _m; i > 0; i--)
 	{
 		subs = _s.substr(i);
-		for(unsigned int j = _t.length(); j > 0; j--)
+		for(unsigned int j = _n; j > 0; j--)
 		{
 			subt = _t.substr(j);
 		
 			// bottom row
-			if(i == _s.length())
-				_matrix[i-1][j-1] = 
-					(_t.length() - (_t.length() - subt.length())) * INSERT;
+			if(i == _m)
+				_matrix[i-1][j-1] = ( _n - (_n - subt.length()) ) * INSERT;
 			
 			// right column
-			if(j == _t.length()) 
-				_matrix[i-1][j-1] = 
-					(_s.length() - (_s.length() - subs.length())) * INSERT;
+			if(j == _n) 
+				_matrix[i-1][j-1] = ( _m - (_m - subs.length()) ) * INSERT;
 		}
 	}
 }
@@ -74,9 +75,9 @@ int ED::OptDistance()
 	// first go through and fill out bottom row / right column
 	BaseCases();
 
-	for(unsigned int i = _s.length()-1; i > 0; i--)
+	for(unsigned int i = _m-1; i > 0; i--)
 	{
-		for(unsigned int j = _t.length()-1; j > 0; j--)
+		for(unsigned int j = _n-1; j > 0; j--)
 		{
 			// potential values of current square, if you arrived from the...
 			int bottom = _matrix[i][j-1] + INSERT;
@@ -100,7 +101,8 @@ std::string ED::Alignment()
 	int* diagptr = &_matrix[i+1][j+1];	
 	int* bottomptr = &_matrix[i+1][j];
 
-	while(i < _s.length()-1 || j < _t.length()-1)
+	while(i < _m-2 || j < _n-2) // m-1, n-1 is base case
+								// m-2, n-2 is the first case 
 	{
 		int* neighbors[] = {rightptr, diagptr, bottomptr};
 		int* chosenptr;
@@ -185,15 +187,15 @@ std::ostream& operator <<(std::ostream& os, const ED& ed)
 {
 	// print _t string across the top (to label the columns) - this is y
 	std::cout << "    ";
-	for(unsigned int i = 0; i < ed._t.length(); i++)
+	for(unsigned int i = 0; i < ed._n; i++)
 		std::cout << "    " << ed._t.at(i);
 	std::cout << std::endl;
 
-	for(unsigned int i = 0; i < ed._s.length(); i++)
+	for(unsigned int i = 0; i < ed._m; i++)
 	{
 		// print _s string along the side (to label rows) - this is x
 		std::cout << std::endl << ed._s.at(i) << "   ";
-		for(unsigned int j = 0; j < ed._t.length(); j++)
+		for(unsigned int j = 0; j < ed._n; j++)
 		{
 			// print contents of squares
 			if(ed._matrix[i][j] > 9)
