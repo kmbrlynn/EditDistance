@@ -22,7 +22,7 @@ private:
 	std::string _s;
 	std::string _t;
 
-//	vector<int*> _matrix;
+	unsigned int _m, _n;
 	int **_matrix;
 
 };
