@@ -101,74 +101,48 @@ std::string ED::Alignment()
 	int* diagptr = &_matrix[i+1][j+1];	
 	int* bottomptr = &_matrix[i+1][j];
 
+	int* chosenptr;// = currentptr;
+
 	while(i < _m-1 || j < _n-1)
 	{
-		int* neighbors[] = {rightptr, diagptr, bottomptr};
-		int* chosenptr;
-
-		// try each neighboring square
-		for(int k = 0; k < 3; k++)
+		if(j < _n-1 && (*currentptr - *rightptr) == INSERT)
 		{
-			// ================================================ if neighbor is Right
-			if(neighbors[k] == rightptr && j < _n-1)
-			{
-				// and it's legal for the path to have come from the right
-				if ((*currentptr - *rightptr) == INSERT)
-				{
-					alignment.append("-");			// _s would be a gap (x)
-					alignment.append(" ");
-					alignment.push_back(_t.at(j));	// _t would be a letter (y)
-					alignment.append(" ");
-					alignment.append("2");
-					alignment.append(" \n");
-					chosenptr = rightptr;
-					j++;				
-				}
-			}
-			// choose the right square, move on
-			if (chosenptr == rightptr) break;
+			alignment.append("-");			// _s would be a gap (x)
+			alignment.append(" ");
+			alignment.push_back(_t.at(j));	// _t would be a letter (y)
+			alignment.append(" ");
+			alignment.append("2");
+			alignment.append("\n");
+			chosenptr = rightptr;
+			j++;				
+		}
 
-			// ================================================= if neighbor is Diag
-			if(neighbors[k] == diagptr)
-			{
-				// and it's legal for the path to have come from the diagonal
-				if ((*currentptr - *diagptr) == penalty(_s.at(i), _t.at(j)))
-				{
-					alignment.push_back(_s.at(i)); // _s would be a letter (x)
-					alignment.append(" ");
-					alignment.push_back(_t.at(j)); // _t would be a letter (y)
-					alignment.append(" ");
-					if ((*currentptr - *diagptr) == MATCH) 
-						alignment.append("0");
-					if ((*currentptr - *diagptr) == REPLACE)
-						alignment.append("1");
-					alignment.append(" \n");
-					chosenptr = diagptr;
-					i++;
-					j++;				
-				}
-			}
-			// choose the diagonal square, move on
-			if (chosenptr == diagptr) break;
-	
-			// =============================================== if neighbor is Bottom
-			if(neighbors[k] == bottomptr && i < _m-1)
-			{
-				// and it's legal for the path to have come from the bottom
-				if ((*currentptr - *bottomptr) == INSERT)
-				{
-					alignment.push_back(_s.at(i));	// _s would be a letter (x)
-					alignment.append(" ");
-					alignment.append("-"); 			// _t would be a gap (y)
-					alignment.append(" ");
-					alignment.append("2");
-					alignment.append(" \n");
-					chosenptr = bottomptr;
-					i++;				
-				}
-			}
-			// choose the bottom square, move on
-			if (chosenptr == bottomptr) break;
+		else if ((*currentptr - *diagptr) == penalty(_s.at(i), _t.at(j)))
+		{
+			alignment.push_back(_s.at(i)); // _s would be a letter (x)
+			alignment.append(" ");
+			alignment.push_back(_t.at(j)); // _t would be a letter (y)
+			alignment.append(" ");
+			if ((*currentptr - *diagptr) == MATCH) 
+				alignment.append("0");
+			if ((*currentptr - *diagptr) == REPLACE)
+				alignment.append("1");
+			alignment.append("\n");
+			chosenptr = diagptr;
+			i++;
+			j++;				
+		}
+
+		else if(i < _m-1 && (*currentptr - *bottomptr) == INSERT)
+		{
+			alignment.push_back(_s.at(i));	// _s would be a letter (x)
+			alignment.append(" ");
+			alignment.append("-"); 			// _t would be a gap (y)
+			alignment.append(" ");
+			alignment.append("2");
+			alignment.append("\n");
+			chosenptr = bottomptr;
+			i++;				
 		}
 
 		// update based on the square (right, diag, bottom) you chose 
