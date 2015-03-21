@@ -7,7 +7,7 @@ const int MATCH = 0;
 const int REPLACE = 1;
 const int INSERT = 2;
 
-// ================================================================= con/destructors
+// ================================================================== con/destructors
 ED::ED(std::string s, std::string t) : _s(s), _t(t)
 {
 	_s.append("-");
