@@ -8,6 +8,9 @@ int main(int argc, char* argv[])
 	std::string s; // corresponds to: x, rows of matrix, i indices
 	std::string t; // corresponds to: y, columns of matrix, j indices
 
+//	s = argv[1];
+//	t = argv[2];
+
 	std::cin >> s; // first string in file
 	std::cin >> t; // second string in file
 

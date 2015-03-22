@@ -15,32 +15,19 @@ Hours to complete assignment (optional):
  *  Explain what you did to find the alignment itself.
  **********************************************************************/
 
-I did some pretty oldschool C-style stuff, making pointers to
-the "current" square and each of its "neighboring" squares - right, 
-diagonal, and bottom. 
+I used C-style arrays, with pointers to the "current" square and each 
+of its "neighboring" squares - right, diagonal, and bottom - in addition
+to a flagging pointer that marks the recovered square as "chosen."
 
-I started off with one big while-loop, which detected the length
-of my two member strings. This gave me my base case.
+Inside a while-loop, there are 3 if-cases for each of the neighboring
+squares. These detect (1) that it's in the bounds of the array, and
+(2), that the difference between the current square's dereferenced value
+and the neighboring square's dereferenced value is correctly evaluated
+as either 0, 1, or 2.
 
-Inside this loop is a smaller loop that iterates over the three 
-pointers to neighbor squares (which I had put in an array). There are
-three different cases for each element in the array of pointers to 
-neighbor-squares: right, diagonal, or bottom. So, nine altogether.
-
-Let's say the index of the array matches up with the right-neighbor
-pointer. First I check whether this could have happened, by subtracting
-the dereferenced right-neighbor pointer from the dereferenced "current"
-pointer. If it equals two, we're good. If it does not equal two, we 
-break out and try the same thing on the diagonal and bottom squares.
-
-Recovering the correct neighbor-square causes us to push the 
-appropriate characters to the alignment string, set the "current"
-pointer to the neighbor-square pointer, increment the
-appropriate index (in this case, j), and update all the other 
-neighbor-pointers based on the incremented indices.
-
-When we break out of the while-loop, we are done. 
-
+If these tests succeed, the pointer to the "current" square assumes
+the value of the pointer to the chosen square. It traverses like this
+until the end.
 
 /**********************************************************************
  * Does your code work correctly with the endgaps7.txt test file? 
@@ -60,14 +47,16 @@ Expected output:
 What happened:
 
 	Edit distance = 4
-	a - 2 
-	t t 0 
-	a a 0 
-	t t 0 
-	t t 0 
-	a a 0 
-	t t 0 
-	- a 2 
+	a - 2
+	t t 0
+	a a 0
+	t t 0
+	t t 0
+	a a 0
+	t t 0
+	- a 2
+
+	Execution time is: 0.000214 seconds.
 
 	Yes, it seems to have worked correctly.
 
@@ -110,12 +99,6 @@ largest N =
 
 Yes - I used ecoli2500.txt
 
---------------------------------------------------------------------------------
-Command:            ./ED
-Massif arguments:   (none)
-ms_print arguments: massif.out.13248
---------------------------------------------------------------------------------
-
 
     MB
 23.96^                                              :                         
@@ -145,7 +128,6 @@ Number of snapshots: 75
  Detailed snapshots: [1 (peak), 17, 25, 30, 32, 39, 42, 50, 60, 70]
 
 
-
 /**********************************************************************
  *  For each data file, fill in the edit distance computed by your
  *  program and the amount of time it takes to compute it.
@@ -157,12 +139,12 @@ Number of snapshots: 75
 
 data file           distance       time (seconds)     memory (MB)
 ------------------------------------------------------------------
-ecoli2500.txt		118				0.929375			23.96
-ecoli5000.txt		160				4.41525				95.58
-ecoli7000.txt		194				9.68961				2.981 GB
-ecoli10000.txt		223				24.2408				
-ecoli20000.txt		3135			198.284
-ecoli28284.txt						585.57
+ecoli2500.txt		118				0.875108			23.96
+ecoli5000.txt		160				4.37735				95.58
+ecoli7000.txt		194				9.69193				187.2
+ecoli10000.txt		223				24.5821				381.9				
+ecoli20000.txt		3135			196.47				1.491 GB
+ecoli28284.txt		8394			574.302				2.981 GB
 
 Fill out the data here first, then go to the assignment web page for
 instructions on sharing your data on iSENSE.

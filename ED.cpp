@@ -105,6 +105,7 @@ std::string ED::Alignment()
 
 	while(i < _m-1 || j < _n-1)
 	{
+
 		if(j < _n-1 && (*currentptr - *rightptr) == INSERT)
 		{
 			alignment.append("-");			// _s would be a gap (x)
@@ -116,16 +117,16 @@ std::string ED::Alignment()
 			chosenptr = rightptr;
 			j++;				
 		}
-
+		
 		else if ((*currentptr - *diagptr) == penalty(_s.at(i), _t.at(j)))
 		{
 			alignment.push_back(_s.at(i)); // _s would be a letter (x)
 			alignment.append(" ");
 			alignment.push_back(_t.at(j)); // _t would be a letter (y)
 			alignment.append(" ");
-			if ((*currentptr - *diagptr) == MATCH) 
+			if (*currentptr - *diagptr == MATCH) 
 				alignment.append("0");
-			if ((*currentptr - *diagptr) == REPLACE)
+			if (*currentptr - *diagptr == REPLACE)
 				alignment.append("1");
 			alignment.append("\n");
 			chosenptr = diagptr;
